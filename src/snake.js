@@ -10,25 +10,34 @@ class Rectangle extends PIXI.Graphics {
     }
 }
 
-export default class Snake extends PIXI.Container {
+export class Snake extends PIXI.Container {
     constructor(size) {
         super();
         this.size = size;
         this.vx = 0;
         this.vy = 0;
-        this.body = [];
+        this.body = this.children;
+        this.head = new PIXI.Point(0, 0);
+
         this.grow();
     }
 
     grow() {
         const cell = new Rectangle(this.size, this.size);
-        this.body.addChild(cell);
+        this.addChild(cell);
     }
 
     move() {
-        for (let i = 0; i < this.body.children.length; i++) {
-            this.body.children[i].x += this.vx * this.size;
-            this.body.children[i].y += this.vy * this.size;
+        for (let i = 0; i > this.body.length - 1; i++) {
+            this.setChildIndex(this.getChildAt(i), i + 1);
         }
+
+        this.head.x += this.vx * this.size;
+        this.head.y += this.vy * this.size;
+
+        const lastElem = this.body[this.body.length - 1];
+        lastElem.position = this.head;
+        this.addChildAt(lastElem, 0);
     }
 }
+
